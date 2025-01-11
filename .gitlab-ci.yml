@@ -1,0 +1,27 @@
+image: python:3.8
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - echo "Сборка Docker-образа..."
+    - docker build -t my-flask-app .
+
+test:
+  stage: test
+  script:
+    - echo "Запуск тестов..."
+    - pip install -r requirements.txt
+    - pytest tests/
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Деплой на сервер..."
+    - ssh user@server "docker pull my-flask-app && docker run -d -p 5000:5000 my-flask-app"
+  only:
+    - master
